@@ -1,0 +1,39 @@
+pm.test("Запрос успешно отправлен на сервер", function () {
+    pm.expect(pm.response.code).to.be.oneOf([200]);
+});
+
+pm.test("Статус-код 200", function () {
+    pm.response.to.have.status(200);
+});
+
+pm.test("Тело ответа представляет собой JSON", function () {
+    pm.response.to.be.json;
+});
+
+pm.test("Каждое поле JSON объекта соответствует схеме", function () {
+    var jsonData = pm.response.json();
+    pm.expect(jsonData).to.have.property('id');
+    pm.expect(jsonData).to.have.property('idBook');
+    pm.expect(jsonData).to.have.property('firstName');
+    pm.expect(jsonData).to.have.property('lastName');
+});
+
+pm.test("Ответ содержит данные из запроса", () => {
+    const responseJson = pm.response.json();
+    pm.expect(responseJson.id).to.eql(parseInt(pm.variables.get("id")));
+    pm.expect(responseJson.idBook).to.eql(parseInt(pm.variables.get("idbook")));
+    pm.expect(responseJson.firstName).to.eql("Alexandr");
+    pm.expect(responseJson.lastName).to.eql('Pushkin');
+});
+
+pm.test("Проверка заголовков ответа", function () {
+    pm.expect(pm.response.headers.has('api-supported-versions: 1.0'))
+    pm.expect(pm.response.headers.has('Content-Type: application/json; charset=utf-8; v=1.0 '))
+    pm.expect(pm.response.headers.has('Server: Kestrel '))
+    pm.expect(pm.response.headers.has('Transfer-Encoding: chunked '))
+});
+
+pm.test("Заголовок запроса содержит правильный метод", function () {
+    pm.expect(pm.request.method).to.equal("POST");
+});
+
